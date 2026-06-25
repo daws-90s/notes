@@ -1,0 +1,10 @@
+subet-1234, subnet-xyz -> AWS
+["subet-1234", "subnet-xyz"] -> terraform
+
+lsblk
+growpart /dev/nvme0n1 4
+lvextend -r -L +30G /dev/mapper/RootVG-rootVol
+xfs_growfs /
+df -hT
+
+for i in 40-databases/ 30-bastion/ 20-sg-rules/ 10-sg/ 00-vpc/; do cd $i; terraform destroy -auto-approve; cd ..;done
