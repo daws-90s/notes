@@ -1,0 +1,47 @@
+configuring database instance
+1. user_data -> only runs at the time of creation
+2. provisioners -> requires ssh connection from where terraform is running,
+
+connect to bastion host, run the terraform commands there. so now bastion host creates ec2, r53, etc..
+1. aws configure
+2. IAM Roles
+
+IAM -> Identity access management
+
+User -> console access through username and password, keys for progrmmatic access
+Group -> a group of users
+Role -> non human users. services in AWS, users from other accounts, third party users called federated users can assume role. We can create role for ec2 service to provide access for creating other AWS services
+Permissions -> What resources and actions
+Policy  -> A list of permissions is called policy
+Policy can be attached to user, group or role
+
+Noun -> Resource
+Verb -> Action on resource
+
+EC2, S3, Cloudfront, LoadBalancer, etc.. -> Resources
+Create EC2, Update EC2, ReadEC2, DeleteEC2 -> Actions on resources
+
+Authentication -> Who you are -> can trust 3rd parties
+Authorization -> What you are
+
+
+terraform_data
+==============
+earlier called as null resource, actually will not create any resources but used for terraform lifecycle. we can have triggers to control when to run. terraform_data used for provisoners and file copy, etc..
+
+ansible controller -> node -> push
+we can install ansible in any node, we can pull the repos and self configure
+
+mongodb
+=======
+install ansible
+pull git ansible repos
+run playbooks against localhost
+
+load balancing
+listener
+target group
+launch template
+autoscaling
+autoscaling policy
+listener rule
