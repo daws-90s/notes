@@ -1,0 +1,48 @@
+mysql instance -> mysql ssm parameter
+
+create ec2 mysql role
+give permission to read ssm parameter
+IAM role for non human users. EC2 instance can have one role and we need to attach SSM parameter read policy
+
+Either team lead or manager
+
+clients -> TL/manager -> if dev work assign to DEV team -> assign to particular person
+HR -> JD
+recruit new persons
+release few persons -> autoscaling
+AvgCPUUtilisation -> 75% -> create new instances
+
+TL/Manager -> Load Balancer
+He will have call with client to get the work -> Listener (HTTP/HTTPS)
+Extension -> port 80/443
+Rules
+=====
+/api/catalogue -> connect catalogue instance -> catalogue.lb_url
+
+catalogue.lb_url -> assign this to catalogue
+Team of members -> Target group
+Checking the availability -> Health check
+Member -> Instance
+
+LB
+==
+name
+vpc
+2 AZ and subnets
+Listener - HTTP/HTTPS and port
+SG
+fixed response
+
+LB URL -> Listener and port -> Rules
+
+1. change the existing instances -> downtime
+2. create another instance, run playbook, take AMI, create new set of instances, delete old instance -> rolling update
+
+AMI -> Amazon machine image
+Steps
+======
+1. create instance
+2. configure instance
+3. stop the instance
+4. take AMI
+5. Launch template -> setting to launch the instance
