@@ -1,0 +1,25 @@
+ALB -> Listener and port -> Rule -> Target group -> Health check -> Instance
+
+1. create EC2
+2. configure using terraform data
+3. stop instance
+4. take AMI
+5. create launch template
+6. create target group
+7. create autoscaling group and policy
+8. add the rule to ALB listener
+
+http://catalogue.backend-alb-dev.daws90s.shop/health
+
+ALB -> Listener and port -> Rule -> Target group -> Instance
+
+certificates are issued to domain, CA authoritites are well known vendors across the world. browsers trust them
+
+root CA -> intermediate CA
+
+domain name, company name, address, city, etc. 
+
+1. add TXT record in your domain -> automation
+daws90s.shop, add TXT record key -> value
+
+2. send email from your domain siva@daws90s.shop -> manual

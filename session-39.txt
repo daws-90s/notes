@@ -1,0 +1,42 @@
+IAM user
+IAM Role
+IAM Policy
+IAM Role to EC2 instance through instance profile
+
+TL/Manager -> LB
+TL Phone -> Listener
+Phone extension -> Port number
+Rule -> Type of work
+Team -> Target group
+Member -> Instance
+Member availability -> Health check
+JD -> Launch template
+HR -> Autoscaling
+Head count policy -> Autoscaling policy
+Employee avg working hours -> AVGCPUUtilisation
+
+1. create ec2 instance
+2. configure instance with terraform_data and ansible
+3. stop the instance
+4. take AMI
+5. create launch template
+6. create target group
+7. create autoscaling -> depends on launch template, target group
+8. create autoscaling policy
+9. configure ALB Listener Rule
+
+whenever catalogue configuration changes, we trigger new instance, new AMI and new launch template version with new AMI ID
+
+Min -> number of instances required all the time
+Desired -> number of instances required right now
+Max -> maximum number of instances autoscaling can create
+
+http://catalogue.backend-alb-dev.daws90s.shop/health
+
+ALB -> HTTP Listener and Port 80 -> Rules evaluation -> Target group -> Instance
+
+1. delete catalogue
+2. delete databases
+3. delete backend ALB
+
+
