@@ -1,0 +1,21 @@
+1. Create EC2
+2. Configure using terraform_data
+3. Stop EC2
+4. Take AMI
+5. Launch template new version
+6. Target group
+7. ASG -> refresh -> rolling update
+8. ASG Policy
+9. Adding rule to ALB
+10. Delete EC2 used for AMI baking
+
+ALTER USER 'root'@'root' IDENTIFIED WITH mysql_native_password BY 'RoboShop@1';
+
+4 instances are running
+
+1 new AMI created
+
+1 new catalogue instance will be added to target group, 1 old catalogue instance will be terminated
+2nd new catalogue instance will be added to target group, 2nd old catalogue instance will be terminated
+3rd new catalogue instance will be added to target group, 3rd old catalogue instance will be terminated
+4th new catalogue instance will be added to target group, 4th old catalogue instance will be terminated
