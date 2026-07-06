@@ -1,0 +1,131 @@
+OpenVPN Access Server Community Image-8fbe3379
+username: openvpnas
+password is key
+ami-03ea534e3e9b6f519
+
+1194 -> openvpn client -> server
+443, 943 -> admin consoles
+22 -> from my ip access vpn ssh
+admin UI: openvpn
+
+Please enter 'yes' to indicate your agreement [no]: yes
+
+Once you provide a few initial configuration settings,
+OpenVPN Access Server can be configured by accessing
+its Admin Web UI using your Web browser.
+
+Will this be the primary Access Server node?
+(enter 'no' to configure as a backup or standby node)
+> Press ENTER for default [yes]: yes
+
+Please specify the network interface and IP address to be
+used by the Admin Web UI:
+(1) all interfaces: 0.0.0.0
+(2) ens5: 10.0.1.75
+Please enter the option number from the list above (1- 2).
+> Press Enter for default [1]:
+
+What public/private type/algorithms do you want to use for the OpenVPN CA?
+
+Recommended choices:
+
+rsa       - maximum compatibility
+secp384r1 - elliptic curve, higher security than rsa, allows faster connection setup and smaller user profile files
+showall   - shows all options including non-recommended algorithms.
+> Press ENTER for default [secp384r1]:
+
+What public/private type/algorithms do you want to use for the self-signed web certificate?
+
+Recommended choices:
+
+rsa       - maximum compatibility
+secp384r1 - elliptic curve, higher security than rsa, allows faster connection setup and smaller user profile files
+showall   - shows all options including non-recommended algorithms.
+> Press ENTER for default [secp384r1]:
+
+Please specify the port number for the Admin Web UI.
+> Press ENTER for default [943]:
+
+Please specify the TCP port number for the OpenVPN Daemon
+> Press ENTER for default [443]:
+
+Should client traffic be routed by default through the VPN?
+> Press ENTER for default [no]: yes
+
+Should client DNS traffic be routed by default through the VPN?
+> Press ENTER for default [no]: yes
+Admin user authentication will be  local
+
+Private subnets detected: ['10.0.0.0/16']
+
+Should private subnets be accessible to clients by default?
+> Press ENTER for EC2 default [yes]:
+
+To initially login to the Admin Web UI, you must use a
+username and password that successfully authenticates you
+with the host UNIX system (you can later modify the settings
+so that RADIUS or LDAP is used for authentication instead).
+
+You can login to the Admin Web UI as "openvpn" or specify
+a different user account to use for this purpose.
+
+Do you wish to login to the Admin UI as "openvpn"?
+> Press ENTER for default [yes]:
+Type a password for the 'openvpn' account (if left blank, a random password will be generated):
+Confirm the password for the 'openvpn' account:
+
+> Please specify your Activation key (or leave blank to specify later):
+
+1. create VPN
+2. VPN SG Rules
+	allow 1194
+	allow 943 and 443
+	allow 22
+3. bastion should only accept from VPN
+4. backend alb can accept from VPN
+
+tf files -> infra
+infra -> tf files
+
+legacy
+======
+1. write provider, run terraform init
+2. write empty block -> resource "aws_instance" "vpn"
+3. run terraform import terraform import aws_instance.vpn instance-id
+4. write state file
+5. we should fetch the values from state file and keep it in aws_instance vpn block
+6. remove what are unnecessary and check terraform plan it should say no changes
+
+latest
+=====
+1. write provider run terraform init
+2. write import block
+3. terraform plan -generate-config-out=main.tf
+4. now terraform write tf config into this
+5. remove which are not required
+6. run terraform import aws_instance.vpn instance-id
+7. then comment import block
+8. run terraform plan make sure there will be no changes
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+# An aliased provider configuration for a different region
+provider "aws" {
+  alias  = "west"
+  region = "us-west-2"
+}
+
+# This resource will deploy to us-east-1 (default)
+resource "aws_instance" "primary_server" {
+  ami           = "ami-0c7217cdde317cfec"
+  instance_type = "t2.micro"
+}
+
+# This resource will deploy to us-west-2 by calling the aliased provider
+resource "aws_instance" "secondary_server" {
+  provider      = aws.west
+  ami           = "ami-0d592e8a609d936b6"
+  instance_type = "t2.micro"
+}

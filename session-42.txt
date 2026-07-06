@@ -1,0 +1,46 @@
+10 instances
+	ansible dynamic inventory
+	get ip addresses
+	connect to all instances
+	stop catalogue
+	remove old code
+	download new code
+	restart
+immutable -> you can't change existing
+
+modular VM approach
+
+Cloudfront
+==========
+Caching the web content service
+
+US -> India, Japan, etc.
+AWS has edge servers across the worlds
+
+application -> DB
+	app opens a connection to DB
+	query runs and result is given
+	connection close
+application -> cache -> DB
+
+a network of content storage servers(AWS edge locations) across the world used to cache the content. there will be origin server,  first request hits the origin server and content will be stored in edge server. subsequent requests will not hit origin, they will get from edge locations
+
+GET POST DELETE PUT
+
+GET -> product images, description, faq, ratings, reviews, videos, .js, .css files etc..
+TTL -> time to live
+
+invalidation
+===========
+when new deployment happens, we can invalidate cache. AWS removes all the content from edge servers and freshly download from origin servers.
+
+https://roboshop-dev.daws90s.shop/media/instana_icon_square.png
+
+/media/*
+
+/images/*
+
+/videos/*
+
+custom modules vs opensource modules
+better go with custom modules, we no need to wait for fixes and issues. we can have full control
