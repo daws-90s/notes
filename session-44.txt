@@ -1,0 +1,144 @@
+stateless -> no data to the applications
+stateful -> data related applications
+
+DMS -> database migration services
+latest drift data also will be streamed into AWS using DMS
+
+terraform taint
+taint == paint == pollute
+
+taint -> resource is failed, next time when we apply terraform it will re attempt to create
+
+if someone manually distrubed the service, we dont want to repair if we want to recreate from the beginning we will taint the resource then apply terraform, it will recreate.
+
+target
+======
+terraform plan -target=aws_instance.terraform-demo
+
+Family History
+==============
+50 years
+
+joint families
+
+6 couples
+18-20 children
+30-40 members
+individual big houses
+
+advantages
+========
+not shared, we have full freedom
+privacy
+we can design, everything is in our control
+
+disadvantages
+========
+high cost
+maintainance completely we have to care
+time taking process
+
+small families
+=========
+one couple, just 2kids
+flat is enough
+
+advantages
+=========
+less cost
+low maintainance
+less time
+
+disadvantages
+=========
+less privacy
+space is shared
+we dont have control
+we need to follow rules
+
+individual
+=========
+single person
+PG or shared room
+
+advantages
+---------
+very less time
+no maintainance
+no responsibilities
+very less cost
+
+disadvantages
+---------
+no privacy
+everything is shared
+0 control
+
+legacy -> monolithic -> micro services
+
+frontend+backend -> enterprise applications in java -> .ear format
+servlets, jsps, jdbc, struts, seam, etc
+
+bare metal servers -> 1 month
+a small change effects everything
+
+Linux/Unix server + websphere, weblogic, jboss, etc... + java install + enterprise apps
+
+Divided frontend and backend and connected through REST/API services
+Monolithic
+Virtulisation
+Bare metal server -> multiple logical VM
+128GB RAM, 2TB HD
+1GB RAM, 8GB HD -> we are blocking the resources
+Apache Tomcat server
+
+digitilisation -> online services
+Monolithic -> Microservices
+Containerisation
+boot time -> from the server creation -> application up
+boot time is in seconds
+no blocking of resources -> can use dynamically
+
+bare metal + VM + Containerisation
+
+Bare metal -> VM -> Containerisation
+Legacy -> Monolithic -> Microservices
+
+Containerisation
+===============
+1. dynamic resource allocation -> no resource blockage
+2. less boot time
+3. less cost
+4. less size
+5. portable
+6. immutable
+7. scalable and reliable
+8. less privacy -> we can address this
+
+
+
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+docker group users or root users
+
+usermod -aG docker ec2-user
+exit and login again
+
+image and containerd
+AMI = OS + System packages + app run time + app code + app libraries + service files -> AMI
+Docker image = Bare min OS + required packages + app run time + app code + app libraries -> Image
+
+image -> container(running instance of image)
+AMI -> Instance
+
+docker ps -> running containers
+docker images -> list the images in server
+docker pull <image-name>:<version>
+docker create nginx:latest
+docker ps -a -> all containers
+docker start <container-id>
+docker rm <container-id>
+docker rmi nginx -> remove image
+docker run = pull + create + start
