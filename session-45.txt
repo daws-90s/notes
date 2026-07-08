@@ -1,0 +1,107 @@
+DOCKER_HOME=/var/lib/docker
+downloaded images, containers, volumes, etc..
+/var/lib/docker -> 2GB
+/var/lib/docker -> 2GB+30GB
+
+docker pull nginx -> docker hub/registry
+if image does not exist in local, it will pull from docker hub
+
+docker container should run in foreground, but we should take it to background not to stuck the terminal
+
+host -> container
+containers also has port from 0-65,535
+in order to reach container request should go through host port
+
+docker run -d -p host-port:container-port nginx
+docker run -d -p 80:80 --name nginx nginx:latest
+
+docker exec -it container-id bash
+docker logs container-id/name
+
+docker stats -> container statistics
+docker inspect container-id/name
+
+Dockerfile -> a set of instructions used to create custom images
+
+FROM
+====
+FROM should be the first instruction in dockerfile, it refers base image
+
+almalinux is again a clone of RHEL
+FROM base-os:version
+
+docker build -t from:v1 .
+
+url/username/image-name:version
+
+docker.io/joindevops/from:v1
+from:v1 -> local image
+docker tag from:v1 docker.io/joindevops/from:v1
+
+docker build -t joindevops/from:v1 .
+docker login -u username
+docker push joindevops/from:v1
+
+RUN
+===
+RUN is used to install packages, run some commands inside the image.
+
+RUN command-1
+RUN command-2
+.
+.
+.
+one image can have multiple run instructions
+
+CMD
+===
+image -> static file
+image -> container, we should have something to run indefnitely
+systemctl will not work in containers, it needs kernel access..
+
+systemctl start nginx -> /etc/systemd/system/nginx.service
+
+CMD instruction is used while creating container from image
+
+daemon off -> run the container in foreground mode
+CMD ["nginx", "-g","daemon off;"]
+
+RUN vs CMD
+==========
+1. RUN instruction is used while building the image
+2. CMD instruction is used while creating container
+3. Dockerfile can have multiple run instructions
+4. There should be only one CMD in Dockerfile, if we give multiple final CMD overrides
+
+EXPOSE
+======
+EXPOSE is used to give info about the ports being exported the image while running as container. EXPOSE really cant open the port, it is just for information
+
+docker rm -f `docker ps -a -q`
+
+ENV
+===
+ENV is used to provide key value pairs as env to the container. programs running inside container can use this env for their configuration
+
+COPY
+====
+used to copy files from local to image.
+
+docker rm -f `docker ps -a -q`
+
+ADD
+===
+ADD also same as copy. COPY and ADD both are used to copy the files from local to image. but ASS has 2 extra capabilities
+1. ADD can fetch content directly from internet.
+2. ADD can untar the file automatically
+
+ENTRYPOINT
+========
+used same as CMD to start the container. but
+1. CMD command can be overriden at the time of running container
+2. ENTRYPOINT can't be overriden, if you try to do it will go and append
+3. CMD can be used as supplier of default args to ENTRYPOINT and we can always override those default args at run time.
+
+but we can use both CMD and ENTRYPOINT for better results
+
+ping yahoo.com ping facebook.com
