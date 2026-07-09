@@ -1,0 +1,33 @@
+USER
+====
+docker containers should not run with root access, we have to run USER instruction atleast one step before CMD
+
+WORKDIR
+======
+used to move to another directory inside docker image
+
+ARG
+===
+ARG instruction is used to set the build variables inside dockerfile. we can have default values and we can override them from cmd line using --build-arg var_name=value
+ARG can be the first instruction before FROM to supply the version to base OS. It cant be accessed again after FROM instruction
+
+ARG vs ENV
+==========
+1. ARG is used to set the build time variables, It can't be accessed inside containers
+2. ENV is used to access key value pairs inside container.
+
+ONBUILD
+=======
+this instruction is used to set the conditions if someone is using our image as their Base image. ONBUILD instruction runs when someone is using our image as their base image.
+
+
+1. take one base os, install mongodb and maintain it
+2. use mongodb official image
+
+OS + system packages + software/app installation
+
+in docker container names are used as DNS.
+
+when we install docker, it creates one default bridge network, it assigns ip address to containers. but containers using default bridge network cant connect with each other
+
+docker always recommends to use bridge network for security reasons, create your own bridge network
