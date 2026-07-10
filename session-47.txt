@@ -1,0 +1,11 @@
+1. Build the image -> docker build
+2. Run the image -> docker run
+
+docker run -d -p 80:80 --name frontend --network roboshop frontend:v1
+follow the dependent containers
+
+docker-compose
+==============
+declarative way of building docker images and running docker containers. we can define dependencies between containers, network, volumes, start the containers, stop the containers at a time...
+docker compose build 
+docker compose up -d
