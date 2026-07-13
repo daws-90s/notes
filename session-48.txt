@@ -1,0 +1,42 @@
+containerisation is not suitable for stateful applications
+containers are ephemeral, data will be deleted once the container is deleted. usually containers will not be useful for database kind of applications
+
+containers are suitable for stateless applications
+use vovlumes for stateful applications
+
+1. unnamed volumes -> if we manage the volume directories then it is called as unnamed volumes
+2. named volumes -> if docker creates the directories and manage them, then it is called as named volumes
+
+keeping data outside of containers
+
+-v /home/ec2-user/html-data/:/usr/share/nginx/html
+	hostpath:container-path
+
+use docker named volumes are preferred
+
+docker best practices
+=====================
+1. use minimal official base images -> alpine 
+2. multi stage builds
+	it is a dockerfile where you have multiple FROM instructions looks like multiple Dockerfiles categorised as stages, one stage creates builds and artifacts that can be used in another stage. useful to reduce the memory of image, because at build time we have may have dependency installation cache, dev dependencies, compiler cache, etc.
+3. run container with non root user
+4. Layer caching
+	docker image is not a single big file, it is the combination of layers. each instruction is layer, these layers can be re-usable. docker stores images as layers in its storage. if someone else use same instruction it will reuse the existing storage...
+	
+	layer 2 = layer 1 + instruction 2
+	layer 3 = layer 2 + instruction 3
+	
+	frequently changing instructions should be at the bottom of Dockerfile, so that layer caching will be useful and fast
+	
+	1. build image -> time can be reduced if properly layered
+	2. run image
+	
+	FROM node:20.20.2-alpine3.22 (image-1) -> intermediate container (c1)
+	instruction 2 will run in the above intermediate container -> image (i2)
+	i2 -> c2
+	instruction 3 will run in c2 -> i3
+	i3 -> c3
+	instruction 4 will run in c3 -> i4
+	
+	always club multiple RUN instructions into single instruction, so that number of layers will be reduced...
+	
