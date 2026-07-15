@@ -1,0 +1,118 @@
+1. Build Image -> Docker
+2. Run Image -> K8
+
+Workstation
+===========
+1. Docker
+2. Eksctl
+3. Kubectl
+4. AWS configure
+
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo systemctl enable --now docker
+sudo usermod -aG docker ec2-user
+
+# for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')
+PLATFORM=$(uname -s)_$ARCH
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
+
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.35.3/2026-04-08/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo cp kubectl /usr/local/bin/kubectl
+
+On-demand vs spot
+=================
+100TB RAM 1PB HD -> On demand
+spot instances -> 70-90% discount
+2min notice and take back
+
+dev and test related workloads, not PROD
+
+apiVersion:
+kind:
+metadata:
+
+eksctl create cluster --config-file=eksctl.yaml
+aws eks update-kubeconfig --name roboshop --region us-east-1
+k8 authentication and authorisation config -> ~/.kube/config
+
+everything is called as resource in kubernetes, any resource we can configure through YAML
+
+1. namespace level -> true
+2. cluster level -> false
+
+namespace
+==========
+an isolated project space where we can create our k8 resources.
+roboshop, expense, amazon, hdfc, flipkart
+
+R53 -> Non VPC
+SG -> VPC
+Cloudfront -> Non VPC
+
+apiVersion:
+kind: # resource type
+metadata:
+spec:
+
+kubectl apply -f 01-namespace.yaml
+kubectl get namespace
+kubectl describe namespace roboshop
+kubectl get namespace roboshop -o yaml
+kubectl delete -f 01-namespace.yaml
+
+pod
+===
+pod is the smallest deployable unit in kubernetes. pod contains one or multiple containers. containers in pod share same network space and storage.
+
+1. ImagePullBackOff/ErrImagePull -> node is not able to pull the image
+	1. authentication issues
+	2. image address is not correct
+2. CrashLoopBackOff -> unable to start containerd
+	check the container command
+
+kubectl exec -it nginx -- bash
+
+labels
+=======
+labels adds metadata to the pod, these are selectors inside kubernetes. you cant have special chars, max char 63
+
+annotations
+========
+annotations are used to provide info to the resources external to kubernetes. you can urls, special char, max length is 256kb
+
+containers can consume resources dynamically. if resources are locked containers keep using more and more resources. other conatainers in the host cant get resources
+
+resources
+===========
+we should limit resources always to containers/pod
+
+cpu and ram/memory
+
+softlimit
+
+hardlimit
+
+
+secrets
+========
+not confidential
+
+encode vs encryption
+
+sivakumar
+
+saiavaaakauamara
+gfdhgfdjg95q095745jkdgfhaf49354390
+
+if you want to expose your pod to outside work, we must attach service
+1. clusterIp
+2. nodePort
+3. LoadBalancer
+
+eksctl delete cluster --config-file=eksctl.yaml

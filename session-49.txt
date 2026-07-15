@@ -1,0 +1,58 @@
+JDK = JRE + Dev librries
+
+JDK -> for development
+JRE -> running the application
+
+npm install -> node_modules
+pip install requirements.txt
+
+semantic versioning
+==================
+major.minor.patch
+
+1.2.3 -> 1 is major version 2 is minor version 3 is patch version
+2.0.0
+2.1.0
+2.1.1
+
+.dockerignore
+=============
+docker build in a folder, loads everything in that folder..
+
+1. build image -> docker
+2. run image -> kubernetes
+
+disadvantages
+=============
+1. single host, can't rely on one host
+2. if multiple docker hosts, it becomes cluster, cluster means master and node. master means orchestrator
+3. network resolution b/w multiple hosts, overlay network is required
+4. autoscaling is not available
+5. load balancing is not available
+6. secrets management is not available
+7. volumes management is not safe
+
+docker swarm -> native docker orchestrator
+Kubernetes
+1. from google, highly stable, more community
+2. PAAS. Kubernetes can integrate with other services in cloud like secrets manager, load balancers,
+3. even docker swarm native load balancing, that is not powerful kubernetes + nginx load balancing
+4. volume management is better in kubernetes
+5. networking is also better
+6. blue/green, rolling update, A/B, canary deployment strategies in kubernetes
+7. helm charts
+
+docker best practices
+=====================
+1. use minimal images
+2. multi stage builds
+3. not running as root container
+4. layer caching
+5. dont use image version as latest, we may loose which version we are running now
+6. ENV handle it in runtime
+7. health checks -> K8
+8. volumes -> k8
+9. scan the images -> ecr scan or trivy
+10. secrets manager -> k8
+11. Resource limits -> k8
+12. .dockerignore -> build time
