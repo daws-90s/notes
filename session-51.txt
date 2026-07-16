@@ -1,0 +1,56 @@
+Since pod is ephemeral we cant use pod ip as DNS, K8 is giving us option to use services.
+1. pod to communication
+2. load balancing
+
+pod -> service -> endpoints(podip:container-port)
+
+1. clusterIP -> internal to kubernetes
+2. nodePort -> expose pod to outside world in internet
+	http://ec2-ip:nodePort -> clusterIP -> pod
+	30000–32767 -> ephemeral ports for nodePort
+	
+	k8 opens one ephemeral nodePort in all the worker nodes, if you hit any worker node on that nodePort, traffic will be forwarded to clusterIP and then to the pod
+3. LoadBalancer
+
+sets
+=====
+1. replicaset
+2. deployment
+3. statefulset
+3. daemonset
+
+pod is subset of replicaset. pod name is replicaset-name-<random-char>. replicaset responsibility to make sure desired number of pods running all the time. replicaset does not care image version change
+
+deployment
+=========
+1. remove old code
+2. download new code
+3. restart the server
+
+pods and containers are immutable
+
+create another version of image
+change the image in pod definition
+then apply new image version
+
+present image version -> v1
+upcoming image version -> v2
+
+present pods are running with image version v1
+4 pods
+
+rolling update
+==============
+4 pods
+it will create new pod with v2, delete one old pod
+it will create 2nd new pod with v2, delete one old pod
+it will create 3rd new pod with v2, delete one old pod
+it will create 4thd new pod with v2, delete one old pod
+
+deployment creates replicaset, replicaset creates pods
+
+1. namespace roboshop
+2. deployment, not pod or rs
+3. configmap
+4. secrets
+5. service -> clusterIP or LoadBalancer
