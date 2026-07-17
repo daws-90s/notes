@@ -1,0 +1,42 @@
+configMap -> key value pairs application configuration
+but we can keep files also in configMap
+
+nginx.conf is key value is nginx.conf file content
+
+if nginx.conf changes?
+
+need to rebuild the image with new version
+push the image
+change manifest image version
+
+envFrom:
+- configMapRef:
+	name: frontend-config
+	
+we need to mount file as volume to the pod
+
+docker
+=======
+
+volumes:
+- mongodb
+volumeMounts:
+- mongodb:/data/db
+
+kubens installation
+===================
+sudo git clone https://github.com/ahmetb/kubectx.git /usr/local/kubectx
+sudo ln -s /usr/local/kubectx/kubectx /usr/local/bin/kubectx
+sudo ln -s /usr/local/kubectx/kubens /usr/local/bin/kubens
+
+health checks
+=============
+1. startup probe
+2. readiness probe
+3. liveness probe
+
+startup probe -> is the container done with booting. this runs only 1 time.
+readiness probe -> is the container ready to accept traffic? kubernetes continously check whether pod and containers are ready or not, if not ready then removes service endpoints
+liveness probe -> long running applications usually will have some locks, kubernetes continously checks whether application is live or not, if not live it will restart the application/pod
+
+for i in frontend/ payment/ shipping/ cart/ user/ catalogue/ rabbitmq/ mysql/ redis/ mongodb/; do cd $i; kubectl delete -f manifest.yaml ; cd ..;done
