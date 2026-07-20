@@ -1,0 +1,111 @@
+Volumes
+========
+Containers/Pods are ephemeral. data stored inside pod will be deleted once pod is deleted.
+EKS cluster is ephemeral including nodes
+
+EBS vs EFS vs S3
+=================
+S3 is object storage, we can mount S3 to the instances. S3 storage is only accessible through HTTP/HTTPS
+
+EBS vs EFS
+===========
+1. EBS is like HD, EFS is like MS Drive
+2. EBS can only be attached to one instance at a time, EFS can be attached to multiple instances
+3. EBS is block store, EFS is file system
+	data is stored as blocks in drives. each block is 4kb size, filesystems are responsible to bring the data from disks. filesystems performs CRUD operations on the blocks.
+	
+	format disk, create file system and mount to instance.
+4. EFS file system is already decided by AWS as NFS protocol. here we have only step mount to the instance.
+5. EBS is faster than EFS.
+6. OS, Database servers EBS is the best option, EFS can't work for this. normal files can be stored in EFS.
+7. EBS is fixed size, EFS is not fixed it grows automatically
+8. EBS should be in the same az as instance. EFS can be anywhere in the network
+9. EBS does not need SG, EFS requires SG
+
+1. ephemeral volumes
+2. perm volumes
+
+ephemeral volumes
+=================
+1. emptyDir
+2. hostpath
+
+emptyDir is created whenever a pod is created and deleted when the pod is deleted. Containers in the same pod shares same network and storage. we use emptyDir to ship pod logs to elk.
+
+Volumes -> Pod level
+VolumeMounts -> We need to mount the volume to individual container.
+
+hostPath
+=======
+if you store pod data in the host, pod is deleted and recreated, it can be scheduled in any other node pod can't mount data in other node.
+
+hostpath is used to ship the host logs outside of kubernetes like ELK. we mount hostPath to containers and allow containers to ship the logs.
+
+hostPath is not secure, we use in rare cases like shipping host logs to ELK, here we can take a precaution of readOnly true..
+
+daemonset -> kubernetes make sure of running one pod replica in each and every node. this pod is used to collect host metrics, logs, etc using hostPath
+
+hostPath is administrator activity...
+1. namespace level -> 
+2. cluster level -> admin...
+
+storage admins
+==============
+1. keep the data secure
+2. daily backups
+3. restore
+4. restore testing
+5. archeival
+6. replicate
+
+if on-premise manual cluster
+
+1. raise a ticket, take the approval from team lead/manager
+2. assign this ticket to storage team.. mention how much disk storage you want, reason, etc..
+3. storage team lead approves. member creates storage and give the address to us.
+4. send an email to admin team
+
+since k8 admins doesnt have idea on storage, kubernetes created some wrapper objects on top of storage objects...
+
+PV PVC SC
+PersistantVolume, PersistantVolumeClaim, StorageClass
+
+PV
+===
+PV is equivalant logical k8 resource of underlying disk...
+It is the physical representation of the disk.
+
+1. static provisioing -> we create disk manually and mount it
+2. dynamic provisioing -> k8 will create disk automatically
+
+EBS static
+===========
+1. Install EBS drivers
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.62"
+2. EKS nodes should have access to mount EBS disks through IAM Role EBSCSIDriverPolicy
+3. Create the disk, where EKS node is available
+	vol-04e44c41a597abe96
+4. create PV
+5. create PVC and use it in pod
+
+access modes
+============
+1. readWriteOnce -> at a time only one node can access. pods in that node can access
+2. ReadOnlyMany -> at a time multiple nodes can readOnly
+3. ReadWriteMany  -> at a time multiple can read and write
+4. ReadWriteOncePod  -> only one pod can read and write
+
+reclaim policy
+============
+1. delete -> Automatically removes both the PV object from Kubernetes and the actual storage
+2. Retain -> data will be persisted even pv and pod is deleted
+3. Recycle -> data will be erased but disk will be there.
+
+PVC
+===
+now disk is created and PV is also bound to that disk...
+
+son -> mother -> father -> wallet
+Pod		 PVC	  PV	   storage
+
+scheduler -> responsible to schedule the pods in the nodes, it uses different consideration to select node. we can control this.
