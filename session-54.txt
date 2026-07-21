@@ -1,0 +1,66 @@
+EBS Static
+==========
+1. Need to add EBS drivers
+2. IAM EBSCSIDriverPolicy to Worker nodes
+3. create disk
+4. create PV
+5. create PVC
+6. add volume in pod
+
+EBS Dynamic
+==========
+StorageClass -> used to create storage and respective PV automatically. for example we create one storeclass for EBS, one storeclass for EFS.
+
+1. Need to add EBS drivers
+2. IAM EBSCSIDriverPolicy to Worker nodes
+3. create storageclass
+4. create PVC
+5. attach volume to pod as PVC
+
+son -> mother -> father -> wallet
+son -> mother -> phone pe wallet
+
+Retain -> data and disk will be persisted
+Recycle -> data will be deleted disk will be persisted
+Delete -> both data and disk will be deleted
+
+we sent pod definition to eks
+scheduler assigned this pod to one node
+node pulled the image
+pod is claiming storage through PVC as dynamic
+so eks creates ebs in the same az as node in
+
+EFS Static
+==========
+1. install EFS drivers
+kubectl apply -k \
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-3.4"
+2. add EFSCSIDriverPolicy to IAM role
+3. create EFS, allow SG port 2049
+4. create PV
+5. create PVC
+6. claim through pod volume
+
+EFS dynamic
+===========
+1. install EFS drivers
+kubectl apply -k \
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-3.4"
+2. add EFSCSIDriverPolicy to IAM role
+3. create EFS, allow SG port 2049
+
+ebs should be used for databases, efs is just for file storage
+
+mysql in k8s
+===========
+1. if you are running multiple pods, we need seperate storage for every pod
+2. if a pod gets write request, it should that to other pods for data sync. so here other pod ip addresses should be discoverable
+3. if a pod is delete and recreated, it should go and attach to the same volume it was using earlier
+
+deployment is for stateless applications, there all the replicas can use same volume..
+k8s created another resource called for statefulset for stateful applications
+
+deployment vs statefulset
+==========================
+1. deployment is stateless applications, statefulset is for stateful applications
+2. all pod replicas in deployment use same storage, pods in statefulset use differnt storage for every  pod.
