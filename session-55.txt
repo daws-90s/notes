@@ -1,0 +1,51 @@
+1. Install drivers
+2. Add permissions to IAM role
+3. Create Disk -> if static
+4. Create PV -> if static
+5. Create SC -> if Dynamic
+6. Create PVC and pod
+
+deployement -> stateless applications
+pods in deployement -> shared storage
+
+Why nodes in Database cluster needs seperate storage for each node?
+
+if shared storage to database nodes?
+3 nodes
+1 node got write request, node stared accessing storage. we must lock another node because changing the disk data at a time can cause corruption of data..
+if NODE-B waits for NODE-A completion, then there in no point of cluster
+
+solution is every node can have its own storage, so no need to wait or lock. if there is a write operation in NODE-A, it will send asynchronus replication request to other peers in the cluster
+
+if stateful applications needs to work in k8
+every pod must have its own storage, so a resource called statefulset is created
+
+statefulset
+===========
+1. statefulset must require PV, PVC for disk.
+2. statefulset must need headless service along with normal service. clusterip none is called headless service. when databases are cluster mode, they need to identify other peers to replicate data, pod does the nslookup on headless returns all the endpoints in the cluster, so it can send communication to other peers.
+3. stateful pod names are standard, it is statefulset-0, statefulset-1
+4. statefulset follows orderly creation and deletion
+
+what is headless service, why should we use it for statefulset?
+1. a service with clusterip none is called headless service
+2. curl http://svc-name:svc-port, nslookup svc-name we will get cluster ip of service
+3. but if we nslookup headless service, it will give us all the endpoints attached to it.
+
+curl -sS https://webinstall.dev/k9s | bash
+
+1. horizontal scaling
+2. vertical scaling
+
+vertical scaling -> increasing the server resources like HD, RAM, CPU, etc. causes downtime. single point of failure
+horizontal scaling -> creating another server to add the capacity. no downtime. no single point of failure
+
+pod dynamically consumes resources.. pod should have softlimits and hardlimits mentioned
+
+90% -> 90 out of 100
+
+selectors
+==========
+1. taints and tolerations
+2. nodeaffinity and antiaffinity
+3. podaffinity and podantiaffinity
