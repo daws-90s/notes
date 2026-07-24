@@ -1,0 +1,84 @@
+Selectors -> controlling kubernetes scheduler to run the pods in desired nodes
+
+nodeSelector:
+	key: value
+
+if the label is not matched pod status will be pending -> hard rule
+	
+taints and tolerations
+======================
+taint is like paint means polluted. k8s will not schedule any pods on this node
+
+1. If we have reserved the node for special workloads with special hardware
+2. if we have GPU attached to the cluster, we reserve this for AI/ML workloads
+3. DB accept connections from specific IP address
+
+we need to have toleration to schedule the pod on tainted node..
+
+VIP Cabin -> tainted cabin
+VIP Pass -> toleration
+
+alpha.eksctl.io/cluster-name=roboshop,
+alpha.eksctl.io/nodegroup-name=managed,
+beta.kubernetes.io/arch=amd64,
+beta.kubernetes.io/instance-type=c3.large,
+beta.kubernetes.io/os=linux,
+eks.amazonaws.com/capacityType=SPOT,
+eks.amazonaws.com/nodegroup-image=ami-03f17208fa123f347,
+eks.amazonaws.com/nodegroup=managed,
+eks.amazonaws.com/sourceLaunchTemplateId=lt-068a625ad975ec545,
+eks.amazonaws.com/sourceLaunchTemplateVersion=1,
+failure-domain.beta.kubernetes.io/region=us-east-1,
+failure-domain.beta.kubernetes.io/zone=us-east-1c,
+k8s.io/cloud-provider-aws=d573a2d478e01899d878f9c9cc3fcc2a,
+kubernetes.io/arch=amd64,
+kubernetes.io/hostname=ip-192-168-1-236.ec2.internal,
+kubernetes.io/os=linux,
+node.kubernetes.io/instance-type=c3.large,
+topology.k8s.aws/zone-id=use1-az4,
+topology.kubernetes.io/region=us-east-1,
+topology.kubernetes.io/zone=us-east-1c
+
+NoSchedule -> dont schedule any new pods
+NoExecute -> evict the already executing pods there
+
+ip-192-168-1-236.ec2.internal -> labeled as project=roboshop
+I used nodeSelector to schedule the pod
+
+kubectl taint nodes ip-192-168-1-236.ec2.internal hardware=gpu:NoExecute
+
+toleration will not gaurentee pod on to the tainted node...
+3 nodes total, if one node is tainted we will have 2 nodes
+if we give toleration, available nodes will become 3..
+
+a node is tainted. we must schedule pod on to that tainted node
+1. toleration is must but pod schedule is not gaurenteed
+2. you should have selector also like nodeSelector
+
+if we want to select the nodes with multiple options then we have nodeAffinity feature
+
+nodeAffinity
+============
+requiredDuringSchedulingIgnoredDuringExecution -> k8 will not schedule, if the criteria does not matched
+preferredDuringSchedulingIgnoredDuringExecution -> K8 will try to match, if not matches it will schedule the pod in any other node
+
+IgnoredDuringExecution -> if the node labels are changed when the pod is scheduled and running, no effect. pod will continue to run
+
+1. Schedule -> while scheduling we have options required and preferred
+2. Execute -> while executing k8 tried to put 2 options again required and preferred, but they withdrawn required options
+
+
+3 nodes, 1b-2 1c-1
+
+podaffinity
+============
+pod-a is scheduled on node-1
+pod-b can be scheduled on node-1 with pod affinity pattern
+
+pod-b can be scheduled on node-2 and node-3 with pod anti affinity pattern
+
+app: store
+
+replica-1 goes to node-1
+replica-2 goes to node-2
+replica-3 goes to node-3
