@@ -1,0 +1,67 @@
+Helm Charts
+============
+1. Build the image -> open source nginx, mongo, node, etc..
+2. Run the image -> manifest files
+
+1. package manager for kubernetes
+2. templatise manifest files -> keep placeholders, submit values at runtime.
+
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+
+Chart.yaml -> we mention helm settings here
+
+helm install <chart-name> . -> first time installation
+helm upgrade <chart-name> . -> any changes
+helm list -> list of all the helm charts
+helm history <chart-name> -> history of the chart
+
+values -> --set deployment.replicas=10
+helm Chart.yaml -> --description 
+
+helm upgrade --install <chart-name> .
+
+values.yaml -> default values
+values-dev.yaml -> dev env values
+values-prod.yaml -> prod env values
+
+cicd
+=====
+dev
+1. authenticate to dev cluster
+2. helm upgrade --install -f values-dev.yaml
+
+prod
+1. authenticate to prod cluster
+2. helm upgrade --install -f values-prod.yaml
+
+we will keep env specific values seperate we apply/upgrade chart with those values at run time. image is same across all the env only values means configuration changes
+
+Chart.yaml -> contains all the chart related configuration like name, chartversion, apiversion, description, etc
+templates -> where we keep all the manifest files with placeholders
+values.yaml -> we maintain default values for the templates placeholders
+
+linux package manager
+=====================
+/etc/yum.repos.d/jenkins.repo -> add the repository details
+dnf repo update 
+dnf install nginx -y
+
+helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+helm repo update
+
+helm upgrade --install ebs-csi-driver \
+    --namespace kube-system --version 2.62.0 \
+    aws-ebs-csi-driver/aws-ebs-csi-driver
+
+EBS
+1. install drivers
+
+helm install prometheus-stack prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+
+mongodb-dev.daws90s.shop
+mongdb.daws90s.shop
