@@ -1,0 +1,100 @@
+S23 ultra -> 500GB
+S26 ultra -> 1TB 23$(S3)
+
+phone -> HD -> S3(backup) 1TB glacier deep -> 1$
+
+13 -> 16
+1TB apple storage
+overnight
+13 -> 16 moved -> 6hours
+13 under maintainance
+full format of 13 -> data lost
+16 -> retrieve -> 4 months photos gone
+
+Helm
+=====
+Chart.yaml
+templates
+values.yaml
+values-dev.yaml
+values-prod.yaml
+
+1. templatise manifest files
+2. as package manager
+
+helm upgrade --install <chart-name> .
+helm history <chart-name>
+helm rollback <chart-name> <revison-no>
+helm list
+helm uninstall
+
+helm repo add <URL>
+helm repo list
+helm install <chart-name> <repo-name>/<chart-name>
+
+--set deployment.imageVersion=""
+-f values-dev.yaml
+
+
+
+RBAC -> Role based access control
+=================================
+1. Authentication -> Who are you?
+2. Authorization -> Do you have access?
+
+Nouns -> Names -> Resources
+Verbs -> Actions
+
+EC2, S3, Route53 -> Nouns
+createEC2, DeleteEC2 -> Actions
+
+CRUD
+R -> lowest access
+R+C -> Juniors
+R+C+U -> Seniors
+R+C+U+D -> TL -> Highest level of access
+
+Which resources? What actions
+
+User Group Role Permissions
+
+A group contains multiple users
+devops team -> devops-trainees, devops-juniors, devops-seniors, devops-tls
+
+user -> 
+trainee/junior/senior/tl
+roles -> permissions
+
+we map user to role and permission through binding
+
+K8S -> PaaS
+
+User, Group, Role, Rolebinding
+A group contains users
+A role contains name and permissions -> trainee and roboshop namespace read access
+A Rolebinding is nothing mapping user/group to the role
+
+EKS can trust AWS IAM
+1. IAM is used for authentication
+2. We use K8S authorization mechanism
+
+1. create IAM group called devops-trainees
+2. we will create 2 users ram raheem
+3. we will add users to that devops-trainees group
+	aws eks update-kubeconfig --region us-east-1 --name roboshop
+4. users should have EKSClusterDescribe permission
+5. IAM group will have EKSClusterDescribe permission
+
+6. Create Role
+7. Create Rolebinding
+
+1. aws-auth configmap is deprecated,
+2. aws is now recommending eks access entries
+
+Role and Rolebinding belongs to namespace level
+ClusterRole and ClusterRolebinding belongs to namespace level
+
+service accounts
+=================
+
+
