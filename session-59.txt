@@ -1,0 +1,48 @@
+Service account
+===============
+sa are used to provide access to the pods so that pods can have perform CRUD on AWS resources whenever required..
+
+1. create sa
+2. create IAM role with IAM permission
+3. map IAM role with sa through annotations
+4. run pod with sa
+
+create OIDC provider, openid connect used to trust third party applications through tokens. This setup enables IAM roles for Kubernetes service accounts (IRSA)
+
+eksctl utils associate-iam-oidc-provider --cluster roboshop --approve
+
+whenever a namespace is created, kubernetes creates a default sa with 0 permissions. by default all the pods run in that namespace using default sa..
+
+eksctl create iamserviceaccount \
+  --cluster=roboshop \
+  --namespace=roboshop \
+  --name=roboshop-secret-reader \
+  --attach-policy-arn=arn:aws:iam::160885265516:policy/RoboShopMySQLSecretReader \
+  --approve
+  
+A role is created for EC2 service.
+
+aws secretsmanager get-secret-value --secret-id roboshop/dev/mysql_root_password
+
+Ingress Controller
+==================
+classic load balancer -> legacy
+
+ALB -> intelligent
+host based routing
+app1.daws90s.shop -> app1
+app2.daws90s.shop -> app2
+
+context based routing
+daws90s.shop/app1 -> app1
+daws90s.shop/app2 -> app2
+
+ALB can read the URL and take the decision. We can configure multiple rules and respective target groups
+
+ALB -> Listener -> Rule -> Target group -> VM(instance)
+ALB -> Listener -> Rule -> Target group -> pod(ip)
+
+m.facebook
+
+
+ingress exposes our pod running in k8 to outside world through load balancer, listener, rules and targetgroups.. ingress contacts aws loadbalancer controller to create the AWS resources
