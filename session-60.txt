@@ -1,0 +1,24 @@
+ingress controller -> AWS LoadBalancer Controller
+ingress resource -> ALB configuration details
+
+ingress resource connects with AWS LoadBalancer Controller that creates actual ALB..
+
+node-1 node-2 node-3
+
+mongodb is in node-2, cataloge is in node-1
+traffic crosses from cataloge pod, then cross node-1 and then enters node-2 and enters to mongodb
+10.0.0.0/16
+
+public ALB -> 10.0.1.0/24, 10.0.2.0/24
+10.0.11.0/24, 10.0.12.0/24
+
+admin
+=======
+gateway class -> alb/nlb
+LoadBalancerConfiguration -> LB configs
+gateway -> Listener configs
+
+developers
+===========
+TargetGroupConfiguration
+HTTPRoute -> routing rules
