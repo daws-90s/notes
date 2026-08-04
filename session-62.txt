@@ -1,0 +1,131 @@
+AWS LoadBalancerController -> Drivers to interact with EC2 and Load Balancing
+eksctl utils associate-iam-oidc-provider \
+  --region us-east-1 \
+  --cluster roboshop-dev \
+  --approve
+  
+eksctl delete iamserviceaccount \
+  --cluster=roboshop-dev \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --region us-east-1 
+
+eksctl create iamserviceaccount \
+  --cluster=roboshop-dev \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::160885265516:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --region us-east-1 \
+  --approve
+  
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=roboshop-dev \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+
+Ingress
+=======
+provide load balancer configuration like ALB, Listener, Rule, Target group, service, etc..
+
+ingress communicates with AWS LoadBalancerController to provision ALB..
+
+1. completely depending on annotations, one annotation miss or spelling error creates more problems that stays silent while applying
+2. administrator and developer together are responsible for ingress resource, means dependency on each other, changing the resource cause more confision
+3. so these reasons cause ingress deprecated.
+4. we dont have much control on ALB through ingress
+
+
+Gateway
+========
+1. gateway class -> tell k8 which LB it is ALB/NLB
+2. LoadBalancerConfiguration -> HTTP/HTTPS, certificates
+3. Gateway -> integration of gateway class and LoadBalancerConfiguration. setting the listeners and ports
+
+above resources are administrator responsibility
+
+4. target group configuration -> creates the target group and target type
+5. http route -> adding the routing rule to listeners
+
+above 2 are developers responsibility
+
+
+# Standard Gateway API CRDs (REQUIRED), built against v1.5.0
+kubectl delete  -f \
+  https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
+
+# LBC AWS-specific CRDs (LoadBalancerConfiguration, TargetGroupConfiguration, ListenerRuleConfiguration)
+kubectl delete -f \
+  https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/heads/main/config/crd/gateway/gateway-crds.yaml
+  
+1. Role seperation. administrator resources and developer resources are not clash with each other
+2. teams can do changes independently
+3. in case of migration from one provider to another provider.. routes will not change so developer no need to touch anything admin handles the new drivers and new vendor gateway CRD installation and provision resources
+
+
+We discussed like why should we give access to EKS to create EC2 resources, why cant we create required infra through terraform and let EKS only to add pods as targets under target groups
+
+
+Blue Green deployment
+=====================
+
+Rolling update -> new pods will be created old pods will be deleted slowly
+zero donwtime -> adv
+at a time app servers 2 diff versions, developers must handle this situation
+
+1st time
+========
+upcoming version -> blue
+main service -> blue
+
+2nd time
+========
+current version -> blue
+main service -> blue
+
+upcoming version -> green
+create one preview service -> green
+check the svc if it is good or not
+
+switch the route
+main service -> green
+zero donwtime, like rolling update no 2 versions at a time, rollbacks are very easy we have previous version stand by -> adv
+double resources -> disadv
+we can make replica count -> 0
+
+kubectl patch svc nginx -p '{"spec":{"selector":{"version":"green"}}}'
+kubectl patch deployment nginx-blue -p '{"spec":{"replicas":0}}'
+
+3rd time
+========
+current running version -> green
+main svc -> green
+
+upcoming version -> blue
+
+kubectl patch svc nginx -p '{"spec":{"selector":{"version":"blue"}}}'
+kubectl patch deployment nginx-green -p '{"spec":{"replicas":0}}'
+
+rollback to green
+========
+kubectl patch deployment nginx-green -p '{"spec":{"replicas":4}}'
+kubectl patch svc nginx -p '{"spec":{"selector":{"version":"green"}}}'
+
+
+1. Recreate -> stop the server, delete old code, download new code and restart the server -> gaurenteed downtime
+2. Rolling update -> gradually creating new versions and deleting old versions. no downtime, multiple versions at a time
+3. Blue Green -> zero downtime, quick rollback always we have another stand by version. but double resources. but we can make replicas 0 for standby version...magic is in switching the route of main service.
+
+4. Canary -> release the changes to few members through some clients. monitor the application, if good gradually increase for all clients -> checking the changes success or not
+
+5. A/B testing -> rolling over the changes to specific set of people based on geo location or device type..
+6. Shadow -> version 2 is release but not to public...duplicate version1 traffic send it to version2 also for testing. but no payments just for testing. clients are not aware of this...
+
+
+
+
+

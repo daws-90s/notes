@@ -1,0 +1,40 @@
+eksctl create iamserviceaccount \
+  --cluster=roboshop-dev \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::160885265516:policy/AWSLoadBalancerControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --region us-east-1 \
+  --approve
+  
+eksctl delete iamserviceaccount \
+  --cluster=roboshop-dev \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --region us-east-1 \
+  --approve
+
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=roboshop-dev \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
+  
+Gateway class -> ALB
+LoadBalancerConfiguration -> LB settings like HTTPS, Certificate
+Gateway -> Integrating Gateway class and LoadBalancerConfiguration
+
+application manifest -> deployment, service, TargetGroupConfiguration, HTTPRoute
+
+TargetGroupConfiguration -> ALB target group -> service -> IP
+HTTPRoute -> rules if app1.daws90s.shop -> app1 target group
+
+arn:aws:elasticloadbalancing:us-east-1:160885265516:targetgroup/roboshop-dev-frontend/302847d8c0a88943
+
+kubectl delete -f \
+  https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/heads/main/config/crd/gateway/gateway-crds.yaml
+  
+kubectl apply -f \
+  https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
