@@ -1,0 +1,92 @@
+Init containers
+===============
+init containers run before main containers run, they always goes to complete stage. if initcontainers fails main container will not execute. we can have multiple init containers running in sequence..
+1. checking for dependencies
+2. schema setup, running sql scripts before the application
+3. fetching the secrets from secrets manager and making it available for main containers
+4. limit blast radius by not having un-necessary installations in main container
+
+
+mysql container
+we will store in secrets manager, we need to fetch
+
+/secrets/mysql-secret.txt
+
+create IAM policy to fetch the secret
+create SA attach this policy
+run pod with SA
+create inti container that fetch the secret to common location
+main container access the secret, export it as env variable
+remove the secret file
+
+arn:aws:iam::160885265516:policy/RoboShopMySQLSecretRead
+
+eksctl utils associate-iam-oidc-provider --cluster roboshop --approve
+eksctl create iamserviceaccount \
+  --cluster=roboshop-dev \
+  --namespace=roboshop \
+  --name=roboshop-mysql \
+  --attach-policy-arn=arn:aws:iam::160885265516:policy/RoboShopMySQLSecretRead \
+  --override-existing-serviceaccounts \
+  --region us-east-1 \
+  --approve
+  
+before main container starts, it should get the secret from the location init container created
+export it and remove it
+
+aws secretsmanager get-secret-value --secret-id roboshop/dev/mysql_root_password --query SecretString --output text | jq -r '.MYSQL_ROOT_PASSWORD'
+
+Upgrading EKS cluster using terraform and blue-green
+====================================================
+zero downtime, but we announce downtime
+
+atleast 3 months before, announce the date and time to applications. change SG rules so that no app team can access cluster in that team
+
+1. EKS Control plane and EKS nodes
+
+-> upgrade EKS control plane. 1.35 -> 1.36
+-> green node group. 1.35
+
+ALB -> Listener -> Rule -> TG -> Pod
+apps will not go down, we cant interact with cluster for any changes
+
+-> create another node group blue with 1.36 version
+
+EKS control plane = 1.36
+EKS blue NG = 1.36
+EKS green NG = 1.35
+
+-> cordon gree nodes -> scheduling disabled
+-> drain green nodes
+-> remove green ng
+
+terraform apply -var="eks_version=1.36"
+
+for addon in vpc-cni eks-pod-identity-agent coredns kube-proxy metrics-server; do
+  LATEST=$(aws eks describe-addon-versions \
+    --kubernetes-version 1.36 \
+    --addon-name $addon \
+    --query 'addons[0].addonVersions[0].addonVersion' \
+    --output text)
+
+  aws eks update-addon \
+    --cluster-name roboshop-dev \
+    --addon-name $addon \
+    --addon-version $LATEST \
+    --resolve-conflicts OVERWRITE \
+    --region us-east-1
+done
+
+terraform apply \
+  -var="eks_version=1.36" \
+  -var="blue_version=1.36"
+  
+eks_version -> 1.36
+blue_version -> 1.36
+
+upgrade EKS control plane to 1.37, blue 1.36
+update addons
+create green ng 1.37
+cordon blue nodes
+drain blue nodes
+disable blue
