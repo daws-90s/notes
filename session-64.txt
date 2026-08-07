@@ -1,0 +1,97 @@
+PodDisruptionBudget TopologySpreadConstraint
+Networkpolicy
+K8 architecture
+
+TopologySpreadConstraint
+========================
+if we want EKS HA. generally 2 zones for HA, 2 nodes. 1 node for 1 zone
+
+AWS always recommends 3 zones for zone level HA and. every zone must contain 2 nodes for node level HA
+
+so every zone should contain min 2 nodes. total 6 nodes and every node should have 1 pod replica...6 pods
+
+3 nodes 1-1-1
+========
+1 pod -> 1-0-0 -> unsafe
+2 pods -> 1-1-0 -> partly safe
+3 pods -> 1-1-1 -> safe
+4 pods -> 2-1-1
+5 pods -> 2-2-1
+6 pods -> 2-2-2
+
+if we choose odd number of replicas, there is always 1 pod difference
+
+we use TopologySpreadConstraint to spread the pods across nodes and zones for HA.
+
+2 nodes 1-1
+===========
+
+replica count = node count * multiplies of 2
+
+2 nodes in 1a 1 node in 1b -> 1a-1 - 1a-2 - 1b
+
+2 pods -> 1-0-1
+3 pods -> 1-1-1
+4 pods -> 1-1-2
+5 pods -> 2-1-2
+
+min 2 zones give us zone level HA, each zone should have atlest 2 nodes for nodelevel HA
+
+PodDisruptionBudget
+===================
+voluntary situations like upgrading eks cluster cordon and drain, autoscaling situations we can save pods for HA using PodDisruptionBudget...
+
+we always need min availability for our application to work even in upgrade situations
+
+2 nodes 1-1
+2 pods -> 1-1 -> 50%
+3 pods -> 2-1 -> 33%
+4 pods -> 2-2 -> 50%
+5 pods -> 3-2 -> 40%
+5 pods -> 3-3 -> 50%
+7 pods -> 4-3 -> 40%
+5 pods -> 3-2 -> we set min availability is 50%
+
+if we drain node-1, kubernetes will not allow to drain
+
+7 pods
+=====
+4 - 3
+1 -> 6 3 -> 4
+2 -> 6 2 -> 5
+
+5 pods should be available
+
+3 nodes
+========
+3 pods -> 1-1-1 -> 66
+4 pods -> 2-1-1 -> 50
+5 pods -> 2-2-1 -> 60
+6 pods -> 2-2-2 -> 66
+
+3 zones, 6 nodes
+min availability -> 60%
+
+2-2-2 -> 60
+
+VPC -> CNI -> plugin for EKS
+
+10.0.0.0/16
+
+network interface provides IP to computer
+ethernet
+wifi
+mobile n/w
+
+t3.small can provide 3 ENI, each interface can give us 4 IP -> 12 -> 11
+22 pods are possible to create in this EKS cluster
+
+100 pods needs 100 IP
+59 IP addresses for m5.xlarge
+
+2 nodes -> 118 pods
+if more applications are coming to eks cluster, we should add more capacity even we have cpu and ram availability
+
+pods in EKS are first class citizens.
+
+

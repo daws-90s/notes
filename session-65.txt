@@ -1,0 +1,109 @@
+TopologySpreadConstraint PodDisruptionBudget
+
+spread pods across zones and nodes, without TopologySpreadConstraint scheduler may schedule the multiple pod replicas in the same node
+
+maxSkew is the allowed no of different count between the balanced and inbalanced nodes
+topologyKey -> Zone or node
+whenUnsatisfiable -> ScheduleAnyWay/DontSchedule
+
+TopologySpreadConstraint gaurentees high availability
+
+PodDisruptionBudget
+voluntary situations like draining(upgrade) autoscaling prevents pod evictions if PodDisruptionBudget does not satisfy with minAvailability, we can always set minAvailability based on number of nodes. PodDisruptionBudget will not protect in in-voluntary situations like crashing and deleting the node
+
+Network
+========
+VPC-CNI is the plugin inside EKS for networking, pod gets IP from VPC CIDR pool. pods are first class citizens, they get real IP we can reach pods directly from VPC network. number of pod IPS are based on capacity and instance type of EKS nodes
+
+ENI, How many pods per interface
+
+namespace is a isolated project space in k8s. we need to setup network policies
+
+if no policies exist in a namespace, then all ingress and egress traffic is allowed to and from pods in that namespace.
+
+aws eks update-addon \
+    --cluster-name roboshop-dev \
+    --addon-name vpc-cni \
+    --configuration-values '{"enableNetworkPolicy":"true"}'
+	
+aws eks describe-addon \
+    --cluster-name roboshop-dev \
+    --addon-name vpc-cni
+	
+Kubernetes Architecture
+=======================
+Master and Node
+
+Control Plane
+=============
+1. api-server -> all requests to k8s hit api-server first, it validates authentication and authorisation. if success it will then call other components like scheduler
+2. scheduler -> schedules pods on nodes. it checks node resources, node selectors, taints and tolerations, affinity, TopologySpreadConstraint, etc. 
+3. control manager
+	Node controller: runs desired number of nodes all the time.
+	EndpointSlice controller: responsible to attach pods IPs as endpoints to services
+	ServiceAccount controller: responsible for creating and managing serviceaccounts
+	Job controller: one time tasks resources like jobs
+4. etcd. memory to cluster. configmaps, secrets, manifest files are stored here.
+5. cloud controll manager -> integrates with cloud provider
+
+Node components
+===============
+kubelet -> agent running inside node that connects control plane and nodes. it always reports node status. responsible to run pods in nodes
+
+kube-proxy -> manages network rules inside the node. brings traffic to the pods
+
+Container runtime -> containerd is the run time in eks. 
+
+add-ons
+======
+
+
+Namespace
+pod
+services
+sets
+	replicaset
+	deployment
+	statefulset
+	daemonset
+HPA
+PV, PVC, SC
+Ingress
+Gateway
+RBAC
+SA
+taints and tolerations
+selectors
+TopologySpreadConstraint
+PodDisruptionBudget
+helm charts
+upgrading cluster
+blue green deployments
+network policies
+
+git
+====
+create repo
+clone repo
+adding files
+adding files to staging/temp area; commit to local repo; push to remote repo
+pull the changes
+add origin
+
+branch
+======
+master
+main -> always pointing to production
+
+we create new branch, we do changes changes and test in all environments
+
+merge vs rebase
+===============
+1. merge creates one extra commit with 2 parents called as merge commit
+2. merge preserves history of changes
+
+rebase
+-------
+1. rebase will not create extra commit
+2. it will not preserve the history, it has linear history like main branch moved ahead alone
+3. it will rewrite commits
