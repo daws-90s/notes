@@ -107,3 +107,80 @@ rebase
 1. rebase will not create extra commit
 2. it will not preserve the history, it has linear history like main branch moved ahead alone
 3. it will rewrite commits
+
+use merge, if a branch is used by multiple users.
+use rebase for private and local branches.
+
+Git conflicts
+=============
+while merging if git finds diff code in the same line number then git gives conflicts. It is the developers responsibility who developed this code.
+
+eggdosa-suresh
+eggdosa-ramesh
+
+Before pushing raising PR, pull the changes and resolve conflicts locally by merging main branch on to local branch.
+
+Branching Strategy
+==================
+Feature branching strategy or GitHub flow
+
+main/master and feature branch
+main/master -> long lived branch
+feature branch -> short lived branch
+
+whatever change we want to do, we create feature branch. When develoment is completed we create PR to bring changes to main branch. If we get conflicts we resolve them.
+
+We can do the deployment into DEV, UAT, PROD from main branch. When PROD is success we can tag the commit using our version. v1.4.0
+
+main develop release
+feature hotfix
+
+same code across all the environments, configuration can be changed.
+
+Git reset
+=========
+Reset the code already committed. Undo the local commits. This is only useful for local branches.
+1. Soft -> code comes to staging area
+2. Mixed -> code comes to workspace
+3. Hard -> code will be deleted
+
+git squash == interactive rebase
+==========
+a feature is a code change from previous commit to present commit
+1.0.0
+1.1.0 -> Egg Dosa
+Egg Dosa = 1.1.0 - 1.0.0 = diff of code
+
+We can combine multiple commits into single commit using squash. But don't do this for shared branches, do this only for private branches.
+
+git rebase -i d4c10f5
+
+pick 8bf896 (HEAD -> masala-dosa, origin/masala-dosa) Aloo masala added
+squash 538e532 Oil added
+squash 3972056 Dosa Batter added
+
+give proper commit message for this squashed commit.
+
+Git Revert
+==========
+This is used for shared/remote branches. If we want to undo changes which went into shared branches already, we can use revert. This will not undo the commit. This will create extra commit correcting those changes.
+History is preserved, nothing is rewritten..
+
+git cherry pick
+==============
+if the required code is already developed, then we can pick that code using cherry pick, we will get new code added using that commit.
+
+C1
+C2 -> extra code added as part of this commit
+
+git cherry-pick C2
+
+git stash
+
+
+
+
+
+
+
+
