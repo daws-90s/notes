@@ -1,0 +1,58 @@
+CI
+===
+It is a process of integrating code into artifact continously, whenever a commit happens into git we can trigger pipeline that can clone, compile, scan, unit test and build the code into artifact. here we can implement shift left too..
+
+functionality errors -> code defect
+build errors -> config errors, etc
+deployment errors -> when deploying into multiple env, it is failing
+
+Linux Server -> install commands(git, npm, docker, aws, kubectl, etc..)
+
+clone
+install dependencies
+authentication
+build
+deploy
+
+jenkins is a simple plain webserver, plugins add everything else to jenkins. SCM plugins like git, build plugins like maven, gradle, notification plugins like slack, email, cloud plugins like aws, azure. kubernetes plugins, credentials management, etc...
+
+curl -o /etc/yum.repos.d/jenkins.repo     https://pkg.jenkins.io/rpm-stable/jenkins.repo
+    yum install fontconfig java-21-openjdk -y
+    yum install jenkins -y
+    systemctl daemon-reload
+    systemctl start jenkins
+    systemctl enable jenkins
+
+we can add or remove plugins whenever we want..
+
+Pre build -> env, options, etc
+Build -> How you are building your application
+Post Build -> Once build completes, what to do generally notifications
+
+freestyle job
+=============
+everything is in jenkins UI, no version control, cant restore, cant track easily who did the change, complex logic, no visualisation, cant reuse, etc...
+
+pipeline job
+============
+version control, review the changes through PR, restore, reuse, etc
+
+declarative vs scripted
+========================
+scripted -> old way of jenkins pipelines, groovy based(like java). pipeline code compiles at run time. pipeline code cant check for errors before execute. you can have more control
+
+declarative -> new way of jenkins pipeline, easy syntax, it checks for errors before started execution.
+
+Master Node architecture
+========================
+master node cant take the builds, it can just get the trigger and assign node to run the build. we can have multiple nodes based on diff configurations, seperate node for java projects, nodejs projects, ios projects, android env, etc...
+
+monitor the nodes, collect the logs, etc,
+
+growpart /dev/nvme0n1 4
+lvextend -r -L +10G /dev/RootVG/varVol
+lvextend -r -L +10G /dev/mapper/RootVG-homeVol
+lvextend -r -L +10G /dev/mapper/RootVG-rootVol
+xfs_growfs /var
+xfs_growfs /
+xfs_growfs /home
