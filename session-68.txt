@@ -1,0 +1,55 @@
+plugins
+=======
+* pipeline stage view
+* pipeline utility steps
+* AWS credentials
+* AWS Steps
+* Sonarqube scanner
+
+credentials
+=========
+ssh-auth
+aws-creds
+
+agent
+=========
+java
+nodejs
+docker
+
+npm install
+
+Shift-left
+==========
+scans and tests before deploy
+
+sonarscan
+==========
+static source code analysis -> coding standards
+static application security testing -> security loopholes in the code
+ami-0f31bd7e406ed0351
+SolveDevOps-SonarQube-Server-Ubuntu24.04-20260612-938693e4-e3336ad7-93a2-4e7c-8ed8-227cfbf25da4
+9000 -> sonarqube web ui
+22 -> ssh access
+
+dependency scanning -> github dependabot, Nexus IQ, Blackduck
+docker image scanning
+dynamic application security testing -> attack on live application
+
+
+Bugs -> sometimes code may work, sometime it will not work. unexpected behaviour of the application is called bugs, it may break in production
+Vulnerabilities -> security related loopholes attackers may use to exploit our application
+Code Smells -> Maintability issues, it may not break the application but very hard to understand and maintain. works today but may not work tomorrow
+
+Security Rating -> A
+Maintability Rating -> A
+Reliability Rating -> A
+
+Code Coverage -> unit testing related
+
+New code
+Overall code
+
+C1 C2 C3 C4
+Overall code = C1 + C2 + C3 + C4
+Latest code = C4-C3
