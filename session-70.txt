@@ -1,0 +1,45 @@
+Trivy -> a simple CLI too that can do multiple scans
+1. package.json
+2. Dockerfile
+3. Image OS scan
+
+trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed --format table 160885265516.dkr.ecr.us-east-1.amazonaws.com/roboshop/catalogue:1.0.0
+
+trivy image --scanners vuln --pkg-types os --exit-code 1 --severity HIGH,CRITICAL --format table 160885265516.dkr.ecr.us-east-1.amazonaws.com/roboshop/catalogue:1.0.0
+
+trivy config --exit-code 1 --severity HIGH,CRITICAL --format table ./Dockerfile
+
+jenkins shared library
+* centralised pipelines
+* DRY, dont repeat yourself. reusable pipelines
+* if any change, we will change in the central pipelines, that will be automatically reflected everywhere
+
+Programming Language		Build Tool			Deployment platform
+NodeJS							npm						EKS
+NodeJS							npm						VM
+Java							maven					EKS
+Java							ant						EKS
+Java							gradle					EKS
+Java							gradle					VM
+Java							maven					VM
+Java							ant						VM
+Python							pip						VM
+Python							pip						EKS
+
+
+if commit id is not changed, then we can say code is not changed
+if commit is changed, we must consider code is changed
+
+build only once, run anywhere
+
+image promotion
+===============
+1. pull the image from ECR
+2. retag it with commit id catalogue:1.0.0 -> catalogue:t357ad1
+
+reference is commit id
+
+unit testing
+api testing or component testing -> test only catalogue component
+
+integration testing -> test all components together for example cart calling catalogue
