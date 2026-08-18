@@ -1,0 +1,36 @@
+main and feature
+
+unit testing -> a function/method test (developers)
+api/component/module -> a single module like catalogue tests with dependent databases -> testers
+SIT -> integration tests -> all modules api testing -> testers
+UAT -> regression tests(main functionality positive/negative cases)
+	   system testing -> entire project testing that includes UI, end to end test cases
+CR Process
+PROD -> deploy, smoke tests(a simple health check, few api get requests)
+		if failure, we roll back
+		
+commit-id is our reference, commit-id is immutable
+
+if commit-id is same, I can say code is not changed
+if commit-id is changed, I can say code might changed
+
+try {
+	code
+	update-commit status as success
+}
+
+catch(Exception e) {
+ update-commit status as failure
+ throw e -> it will throw the error to output
+}
+
+3 accounts, 3 cluster
+
+dev -> dev account -> roboshop
+sit, uat -> uat account -> roboshop
+prod, pre-prod -> prod account -> roboshop
+
+roboshop-dev
+roboshop-sit
+roboshop-uat
+roboshop-prod
