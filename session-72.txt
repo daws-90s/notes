@@ -1,0 +1,35 @@
+aws authentication
+aws eks update-kubeconfig --region us-east-1 --name roboshop
+helm upgrade --install -f values-dev.yaml
+
+kubectl get pods -n roboshop-dev -l project=roboshop,tier=backend,component=catalogue -o jsonpath='{.items[0].status.podIP}'
+
+feature-branch-pipeline -> upstream -> dev-deploy
+catalogue-api-tests -> downstream
+
+upstream can wait for downstream -> should wait
+upstream no need to wait
+
+if downstream failed, upstream can ignore 
+if downstream failed, upstream also failed -> consider
+
+main branch
+============
+when a commit comes to main branch, we can automatically trigger main pipeline that deploys to dev environment and run unit-test cases
+if success it will do the image promotion, pull image and retag image, push image
+
+when goes to sit
+================
+commit-id -> which commit is going to PROD
+which env -> sit
+
+check that commit-id passed dev-deploy and api-tests? if yes then lets proceed to sit-deploy and run integration-tests
+
+if not error dev is not success
+
+lets go to uat
+commit-id -> which commit is going to PROD
+which env -> uat
+check that commit-id passed sit-deploy and integration-tests? if yes then lets proceed to uat-deploy and run regression-tests
+
+
