@@ -1,0 +1,39 @@
+CR Process
+==========
+change request process
+
+v1.0.0
+v1.1.0 -> planning
+
+client BA -> our BA
+
+team leads, team manager, architects
+20th SEP, v1.1.0
+
+CR website
+raise CR
+	what is the change description
+	date
+	time
+	scans
+	tests
+	smoke tests
+	rollback
+	approvals -> TL, DL, Client
+CR-HYU656
+17-SEP deadline to get all approvals
+
+commit status validation
+========================
+SIT -> dev-deploy, api-tests
+UAT -> dev-deploy, api-tests, sit-deploy, integration-tests
+PROD -> dev-deploy, api-tests, sit-deploy, integration-tests, uat-deploy, regression-tests
+
+pipeline stage view
+pipeline utility steps
+sonarqube
+multi branch webhook trigger
+aws creds
+slack notify
+jira steps
+generic webhook trigger
