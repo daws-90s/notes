@@ -1,0 +1,111 @@
+DevOps team clients developers
+
+1. shift left
+2. build once and run anywhere
+3. Centralised pipelines
+4. Infra modules
+5. Platfrom engineering model
+6. DEV -> PROD complete automation
+7. feature branching strategy
+8. merge or rebase as merge strategy
+9. cloud native approach -> with less efforts we can move application across different platforms
+10. We let developers only focus development, remainig things we will take care
+
+We follow shift left strategy, every commit we scan, test and deploy.
+
+developers send an email to us
+1. complete new project
+2. migration to devops
+
+we will setup a meeting with developers. we discuss their
+-> programming language
+-> build tool
+-> deployment platform
+
+We tell them we have centralised pipelines readily available. we discuss branching strategy and merge strategy. we explain the settings and we do the settings. we will place one simple Jenkinsfile in their repo calling our shared libraries.
+
+we need to create their presence in all the devops related tools
+jenkins, sonarqube, k8s namespace, git organisation and repos, git settings
+
+basically we need to onboard application into devops
+
+We will be on call support for 2 production deployments. from next time their support or development team can take care of PROD deployments
+
+centralised/platform devops engineering
+problem with individual devops teams are they follow different process, we can't standardise. we cant enforce best standards, complaiance, governance
+DRY
+centralised standards
+
+developers/catalogue side
+=========================
+development
+devops team -> co ordinate every release with developers. if something wrong then coordinate with centralised devops team
+raise CR and get approvals
+trigger PROD deployments and checks
+
+migration
+=========
+they may be using diff branching strategy, we need to change their strategy to feature branching
+we also taught them about merge strategies..
+
+they may be using their own pipelines facing lot of problems from audit, complaince and governance
+
+I am the founding member of the team
+we improved alot in last 2/3 years
+
+we created this feature branching and 2 types of pipelines
+1. feature pipeline
+2. main pipeline
+
+every commit comes into feature branch trigger feature pipeline
+every commit comes into main branch trigger main pipeline
+
+intially, we did not have scans and tests in pipeline. we are just installing dependencies and deploying. complete testing was manual
+
+later we realised we need to follow shift left strategy.. we slowly enabled diff types of scans
+1. intially started with sonar for static source code analysis and static application security testing
+we took around 6 months to complete enable and enforce with quality gates
+we faced resistance from developers regarding unit testing, they were not agreed. later we escalated this to director level. we promoted the importance of unit testing and convinced developers to write test cases for their own good.
+
+2. we enabled few more scan library scans, image scans also.
+3. we worked with testing team to slowly automate test cases. intially component/api testing
+4. we helped them to create pipelines that executes automated test cases once dev environment deployment is completed.
+
+we integrated github and jenkins with webhooks. we are using multi branch pipelines every commit comes into feature branch triggers our pipeline. we scan, build, test and deploy every commit.
+
+developers raise PR once dev env is done. their we setup few rules
+-> changes to main branch through PR
+-> no one will have delete access
+-> min 2 approvals
+-> commit should pass all the stages in feature branch. we are noting commit status at every stage. if those stages are successful in feature branch then only they can merge
+
+once commit comes into main branch we again deploy and test into DEV env. because commit id is changed.
+
+we implemented raising PR automatically through pipeline once feature branch pipeline is success.
+
+earlier developers were raising JIRA manually. we recently implemented creating JIRA also through pipeline
+
+developers or their devops team can trigger into SIT/UAT/PROD from JIRA..
+
+we already implemented integration test cases into our CICD along with testing team
+
+now they are doing end to end test cases, regression tests manually in UAT. our goal is completely automate UAT as well including testing..
+
+we are also discussing with manager to automate the CR process as well.. CR automatic creation, uploading scan results, test results, etc.
+
+infra creation, we are also taking care of terraform modules in our organisation
+we are maintaining ansible roles
+
+version upgrades
+===============
+platform -> EKS
+tools -> jenkins, terraform, sonar, git, etc..
+programming languages
+applications -> version upgrades -> new changes in development
+
+ingress -> gateway -> we created LB outside of EKS and we use tgb
+dockerfile -> we reviewd all the docker appraoch and streamlined images
+
+earlier teams were using k8s secrets -> AWS secrets manager
+earlier they were not using volumes for one application which requires some storage -> you implemented external volumes using PV, PVC and EBS/EFS
+
