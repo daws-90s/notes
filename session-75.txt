@@ -1,0 +1,37 @@
+Jenkins CICD
+=============
+1. We need to manage K8s credentials in jenkins agents.
+2. GitOps, here GIT is not single source of truth in Jenkins.
+3. argocd checks github repository periodically and matches git config to LIVE cluster. so whatever is declared in git actually applies to cluster. GIT is single source of truth.
+4. self healing, revert the unknown changes automatically to declared configuration.
+5. one argocd is enough to manage multiple K8s clusters
+6. audit..we need to check jenkins logs to understand what happened. actual audit should be git log which is not possible with jenkins. argocd provides proper auditing
+
+-> if jenkins manages CICD approach completely, app config sits with app code a tight coupling between code and configuration.
+-> we can't test changed configuration, for example PROD configuration. if some spelling mistke or failed configuration should come again from the DEV, SIT, UAT, CR process and PROD. which is not required.
+-> so if we manage the configuration in a seperate repo, jenkins job is to update the values-prod.yaml. then argocd pickup the values-prod.yaml
+catalogue is seperate repo which has application code
+catalogue-config is a seperate repo where k8s manifests/helm charts available
+
+when we deploy, for 2 days it is fine, but later major defect found. rollback is manualy login to cluster or trigger any jenkins pipeline which is not aware by GIT.
+
+rollback in argocd is just revert the commit.
+
+GitOps
+======
+whatever is available in git, it should be in the cluster
+1. if I edit in k8s cli, jenkins can't detect this
+2. we are setting the version in runtime actually not available in git, depends on jenkins logs
+
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
+
+gdDNgrOxkDziz5ks
+
+in argocd everything is called as application...
+1. argocd can manage the cluster configuration through git.
+2. argocd can manage the application deployments
