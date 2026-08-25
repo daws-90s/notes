@@ -1,0 +1,35 @@
+api-server -> argocd admin website
+repository-controller -> watching github
+application-controller -> checks the applications in argocd
+
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster roboshop \
+    --approve
+	
+eksctl create iamserviceaccount \
+--cluster=roboshop \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::160885265516:policy/AWSLoadBalancerControllerIAMPolicy \
+--override-existing-serviceaccounts \
+--region us-east-1 \
+--approve
+
+helm repo add eks https://aws.github.io/eks-charts
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=<cluster-name> --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller
+
+helm search repo eks/aws-load-balancer-controller --versions
+
+github actions
+================
+for we need extra tool, extra resources/team to manage jenkins. everything is in our control
+
+1st task in CI cloning the code, for github code is already available and accessible. they got the idea to add CI capability along with code..no need of CI installation. it is not in our control. code must be in github not bitbucket/gitlab
+
+Jenkins Master -> Github Actions
+Jenkins nodes -> Github runners -> github-hosted, self-hosted
+Pipeline -> workflow
+
+
+
