@@ -1,0 +1,14 @@
+github context
+env context
+github output
+
+Jenkins nodes -> Github runners -> github-hosted, self-hosted
+Pipeline -> workflow
+parameters -> inputs
+shared libraries -> reusable workflows
+
+self hosted runners
+===================
+create ec2 instance and attach to github as selfhosted
+
+concurrency -> if we dont want multiple triggers to the workflow
