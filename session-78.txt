@@ -1,0 +1,94 @@
+github action syntax
+triggers
+conditions
+contexts
+	github context -> full variables avaialbe
+	github output -> to pass one job variables to another job
+	github env -> with in the same job to access variables from one step to another step
+reusable workflows
+	caller -> location of reusable workflows, send parameters with section
+	callee -> workflow_call, expects inputs
+self-hosted runner
+	1 runner only 1 job at a time
+	same runner multiple jobs -> we need to have multiple github-actions folders created
+	
+	feature-workflow -> running and waiting for api-tests-workflow to complete
+	api-tests-workflow -> running
+
+github-actions -> CI
+argocd -> CD
+	1. don't store eks cluster credentials in jenkins
+	2. gitops
+	3. self healing
+	4. cluster management
+	5. better audit
+
+runner -> no aws credentials should be stored in github to push k8s manifests, maximum we can have read access to the cluster to get ip-address for test cases
+	1. ECR push and pull access -> IAM Role
+	2. We can store EKS namespaces read access only -> EKS IAM access entries
+bastion -> admin client for eks cluster
+
+runners
+========
+2 runners
+1 is for feature-workflow that calls nodejs-eks-workflow
+1 is for api-tests-workflow
+
+mkdir actions-runner-2 && cd actions-runner-2
+curl -o actions-runner-linux-x64-2.336.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.336.0/actions-runner-linux-x64-2.336.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.336.0.tar.gz
+
+./config.sh --url https://github.com/daws-90s --token <token>
+
+mkdir actions-runner-2 && cd actions-runner-2
+curl -o actions-runner-linux-x64-2.336.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.336.0/actions-runner-linux-x64-2.336.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.336.0.tar.gz
+
+./config.sh --url https://github.com/daws-90s --token <token>
+
+[Unit]
+Description=Github Runner
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ec2-user/actions-runner-1/run.sh
+Restart=always
+User=ec2-user
+
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description=Github Runner
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ec2-user/actions-runner-2/run.sh
+Restart=always
+User=ec2-user
+
+[Install]
+WantedBy=multi-user.target
+
+argocd
+======
+1. cluster level -> lbc, sc, ebs driver, efs drivers, rbacs, etc..
+2. namespace level
+
+Vlu68W9stAofN1th
+
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster roboshop \
+    --approve
+	
+eksctl create iamserviceaccount \
+--cluster=roboshop \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::160885265516:policy/AWSLoadBalancerControllerIAMPolicy \
+--override-existing-serviceaccounts \
+--region us-east-1 \
+--approve
