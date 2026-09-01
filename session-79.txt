@@ -1,0 +1,20 @@
+github custom actions
+====================
+1. composite -> works in all OS, we can write scripts
+2. javascript -> js code works in all OS
+3. Dockerfile -> works only in linux. it builds the image, run the container. it executed CMD or entrypoint script
+
+a simple action that accepts name and says Good Morning ${{ name }}
+
+curl -s -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer <token>" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/daws-90s/catalogue/dependabot/alerts?state=open"
+			
+alert -> alert description -> eks cluster login -> check logs -> check manifest/app code -> google search -> fix the error
+
+alert -> alert description -> eks cluster login -> check logs -> check manifest/app code -> AI model search -> fix the error
+
+Agent -> on behalf of human
+Agent -> store the eks credentails and other knowledge base urls, any other information
