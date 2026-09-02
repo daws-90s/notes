@@ -1,0 +1,128 @@
+mkdir actions-runner-1 && cd actions-runner-1
+curl -o actions-runner-linux-x64-2.336.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.336.0/actions-runner-linux-x64-2.336.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.336.0.tar.gz
+
+./config.sh --url https://github.com/daws-90s --token BBFIYWRZ3JOJRV7JEET4M2DKS6HJU
+
+[Unit]
+Description=Github Runner
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ec2-user/actions-runner-1/run.sh
+Restart=always
+User=ec2-user
+
+[Install]
+WantedBy=multi-user.target
+
+
+mkdir actions-runner-2 && cd actions-runner-2
+curl -o actions-runner-linux-x64-2.336.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.336.0/actions-runner-linux-x64-2.336.0.tar.gz
+tar xzf ./actions-runner-linux-x64-2.336.0.tar.gz
+
+./config.sh --url https://github.com/daws-90s --token BBFIYWUGSN7DIFQIHZNDBQ3KS6HZC
+
+
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
+
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+argocd admin initial-password -n argocd
+
+TVpGLudATKIWk2yl
+
+kubectl -n argocd patch configmap argocd-cm --type merge -p '{"data":{"timeout.reconciliation":"45s"}}'
+
+kubectl -n argocd rollout restart deployment argocd-repo-server
+
+kubectl patch -n argocd configmap argocd-cm --type='merge' -p='{"data": {"accounts.admin": "apiKey,login", "admin.enabled": "true"}}'
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE3ODgzMTQ0NDUsImlhdCI6MTc4ODMxNDQ0NSwianRpIjoiZ2l0aHViLWFjdGlvbnMifQ.pK4wx0HWr1SoN50P3x62QirfpVurwBFa0ClU0AeurRQ
+
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster roboshop \
+    --approve
+	
+eksctl create iamserviceaccount \
+--cluster=roboshop \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::160885265516:policy/AWSLoadBalancerControllerIAMPolicy \
+--override-existing-serviceaccounts \
+--region us-east-1 \
+--approve
+
+4 golden signals of monitoring
+==============================
+Latency -> How much time a request took
+Errors -> any errorrs in the system
+Traffic -> How much traffic we are getting
+Saturation -> What are the system resources we have
+
+trace-id
+we create a id when the request started from browser
+every trace-id can have spans
+
+MELT
+Metrics -> system and application metrics
+Logs -> each request will have logs
+Events -> any change in system is event
+Traces -> Every request is traces
+Code base
+
+Google
+
+AIOps -> artificial intelligence operations
+
+AI agent is on behalf of human -> same access levels preferably read-only
+AI agent talks with model
+
+Planning Execution Review
+
+Metrics -> prometheus and grafana
+TSD
+
+time -> money
+category
+food -> 100
+travel -> 20
+entertainment -> 250
+
+cpu usage ->
+every 15sec -> 3
+	  30sec -> 4
+	  45sec -> 2.5
+	  
+PULL model -> Periodical
+PUSH model -> based on event
+
+
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/node_exporter/node_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+up{app="prometheus", instance="localhost:9090", job="prometheus"}	1
+metric -> up
+value -> 1
+
+app="prometheus", 
+instance="localhost:9090", 
+job="prometheus"
+
+prometheus should discover its targets dynamically
