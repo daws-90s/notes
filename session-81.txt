@@ -1,0 +1,42 @@
+USE -> Utilisation, saturation and errors
+
+instant value
+range value
+
+rate function -> /sec
+speed -> 120km/hr
+
+10/60
+
+seconds
+idle, except idle it means CPU is busy
+
+metrics are being collected
+we can write some rules to trigger alerts
+if up != 1, then raise an alert
+
+
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-bundle.crt
+logfile        /var/log/msmtp.log
+
+account        gmail
+host           smtp.gmail.com
+port           587
+from           from@gmail.com
+user           from@gmail.com
+password       <app-password>
+
+account default : gmail
+
+{
+echo "To: to@gmail.com"
+echo "Subject: Test"
+echo "Content-Type: text/html"
+echo ""
+echo "test"
+} | msmtp "to@gmail.com"
+
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' <SLACK_WEB_HOOK_URL>
