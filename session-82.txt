@@ -1,0 +1,94 @@
+Prometheus and Grafana
+======================
+Pull model
+exporters
+service discovery
+we can see targets in prometheus
+rules
+alert manager -> receivers
+
+Grafana -> prometheus datasource
+we can create dashboards and inside visualisations
+
+https://hooks.slack.com/services/<confidential>
+
+backend-ip:8080/metrics
+
+counter -> car odometer (always increases), data used(end of the month we can reset to 0)
+gauge -> continously chaning, for example speed
+histogram
+
+percentile
+100 members, I got 98 marks out of 100, 31 members got more than 98
+
+my percentile = (number of persons scored less than 98/total number of students)*100
+
+100-31-1 = 68
+(68/100)*100 = 68
+
+100 requests -> 95 requests -> 1sec, 5 requests 10sec
+avg = 145/100 = 1.45sec
+
+http_requests_duration
+p50 -> how much time 50% of the requests took
+p90 -> how much time 90% of the requests took
+p95 -> how much time 95% of the requests took
+p99 -> how much time 99% of the requests took
+
+histogram_quantile(0.95, sum(rate(http_requests_duration_seconds_bucket[5m])) by (le))
+
+histograms groups measurements into buckets, for example p50, p90, p95, p99 buckets
+p50 -> 50 percent of the requets are completed in this duration
+p90 -> 90 percent of the requets are completed in this duration
+p95 -> 95 percent of the requets are completed in this duration
+p99 -> 99 percent of the requets are completed in this duration
+
+let us take 100 requests..
+1-10 -> 1sec
+10-20 -> 1.5sec
+20-50 -> 3sec
+50-70 -> 5sec
+70-89 -> 2.5sec
+90-98 -> 2sec
+99 -> 4 sec
+100 -> 10 sec
+
+
+1sec -> 10 requests
+1.5 -> 10
+2 sec -> 9
+2.5sec -> 19
+3sec -> 30
+4sec -> 1
+5sec -> 20
+10sec -> 1
+
+we keep the request duration seconds in ascending order, what is time the 99th request taken? for example 5 sec
+99% of the requests took less than 5 sec
+p50 -> 3 sec
+p90 -> 5 sec
+
+
+black-box -> We dont know what is inside, as a public user we can still test. https certificate expiry, is the system up, how much time for response
+white-box -> we know everything inside the system. We have infra and application access
+
+SLI -> Service Level Indicator -> success requests, request duration
+SLO -> Service Level objective -> It is our internal agreement not with client. How much time systems should be available 99.5% availability
+SLA -> 99%, its a client promise, we need to pay penalities
+
+600 -> Telugu, Hindi, English, maths
+SLA -> pass marks (promised to our parents)
+SLI -> what we are aiming personally
+
+30 days
+========
+10000 requests
+clients -> 9900 requests
+SLO -> 9950
+error -> error rate 50
+error budget is 50 for 30 days
+1.5
+
+
+
+
