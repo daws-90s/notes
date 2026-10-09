@@ -1,0 +1,75 @@
+What is model?
+
+A model is a program learned from billions of examples, it is trained on huge amount of data to generate patterns. it is completely from traditional program. normal programs works on rules. for example send an alert if there is cpu usage of 90%. But models can understand different situations through the training, so they can predict the response to the different situation it never faced...
+
+these patterns are called as parameters. 70B it is trained 70 billion parameters.
+
+What is token?
+
+token is a small piece of text model reads and writes, on an average model treats 4 char as token. common words are considered as 1 token, un common words mostly 4 char into 1 token, special chars are considered as 1 token.
+
+input tokens, output tokens..
+input token charges are different, output token charges are different 
+
+100 tokens input -> 100paise
+500 tokens output -> 500paise
+6rs
+
+every conversation it carries to the model, so charges will be exponentially increased. so create new conversation every time or summerise the conversation...
+
+What is LLM
+Large -> trained billions and trillions of parameters, mostly entire information in internet
+Language -> it works on text like writing, summerising, reading, etc..
+Model -> trained on huge amount of data..
+
+it can take the questions and predict the response...
+
+What is agent?
+==============
+Agent is a program calling LLM in loop. agent is like on behalf of human communicating with LLM take the instructions, execute them, again check with LLM..
+
+brain is LLM here, agent is just an executer performing the actions told by LLM
+
+Context?
+========
+the amount of tokens LLM can read at a time, usaully 200K-1M tokens..more than these tokens LLM ignore previous conversation. so frequently compact the conversation
+
+/compact
+
+RAG
+====
+Retrieval Augemented Generation. LLMS trained on public data, they dont have info or knowledge about our project...
+
+we can feed agents our information as knowledge, that is called RAG like our gihtub repos, and our previous RCA documents, these are called as RAG. Agent while contacting with LLM it can carry this knowledge to LLM, so LLM can read this and provide best solution for us...
+
+MCP
+===
+Model context protocol. API is a strict contract document to share the information between multiple systems
+
+URL, method, Request, content-type, etc..
+
+suppose if you want to work 50 systems, we need 50 integrations minimum...
+
+MCP servers are developed for agents to get the information without writing the integration code. for example if agent wants to send an email, it will first contact the gmail MCP server and ask for its capabilities/tools...
+
+Gmail -> system
+tools/capabilities -> send email, read email, delete spam, summerise all the email from particular person,
+Parameters -> sender, subject, body, to, etc...
+
+Gaurdrails
+==========
+safetyt rules you are setting for agent, for example it can only read not write. you can tell agent what it is allowed to do, what it is not allowed to do..
+
+gaurd rails make sure that agents will not do any mistakes. we can give least access to the agent..
+
+Evals
+======
+You can tell agent to perform certain tests before taking or after executing the action.. like dont deploy the code until this test case pass. this is like unit test cases for AI
+
+Transformer
+===========
+Transformer architecture is inspired from neural architecture in our brain. when we born we have neurons which are not connected with each other.. neurons are brain cells..when a child is growing he learns through his sensory organs eyes, taste, listen, touch, smell, etc.. neurons connect with each other to share the information. over the years brain disconnect neural connections which are not important, maintains the connections which are important... 
+
+attention. when LLM reads the information it checks the entire sentence, it compares every word with another word in the sentence and understand it in a better way, this is called as attention behind transformer architecture
+
+I am sitting at the river bank, I am waiting for deposit the cash in the bank..
